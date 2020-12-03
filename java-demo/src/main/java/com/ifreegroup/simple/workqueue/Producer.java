@@ -31,7 +31,7 @@ public class Producer {
         try (Connection connection = connectionFactory.newConnection();
              Channel channel = connection.createChannel()) {
             //点对点消息不需要指定exchange
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 10; i++) {
                 String message = "hello world " + i;
                 channel.basicPublish("", QUEUE_NAME, null, message.getBytes("UTF-8"));
                 System.out.println(" [x] Send message'" + message + "'");

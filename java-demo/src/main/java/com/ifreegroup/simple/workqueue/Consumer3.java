@@ -5,18 +5,15 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
 /**
  * Title: Consumer1
- * Description:工作队列消费者，手动确认且每次处理一条消息
+ * Description:工作队列消费者，自动确认
  * Company: iFree Group
  *
  * @author liqi
  * @date 2020/11/30
  */
-public class Consumer1 {
+public class Consumer3 {
     private static final String RABBITMQ_USERNAME = "guest";
     private static final String RABBITMQ_PASSWORD = "guest";
     private static final String RABBITMQ_VIRTUALHOST = "/";
@@ -34,11 +31,10 @@ public class Consumer1 {
         try {
             Connection connection = connectionFactory.newConnection();
             Channel channel = connection.createChannel();
-            //每次只接受一条消息进行处理
-            //channel.basicQos(1);
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
             System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-
+            //每次只取一条处理
+            //channel.basicQos(1);
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
                 System.out.println(" [x] Received '" + message + "'");
@@ -51,16 +47,14 @@ public class Consumer1 {
                     channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
                 }
             };
-            //手动确认为false 消息不会再平均分配
-            boolean autoAck = true;
-            channel.basicConsume(QUEUE_NAME, autoAck, deliverCallback, consumerTag -> {
+            channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> {
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void doWork() throws InterruptedException {
+    private static void doWork() throws InterruptedException {
         Thread.sleep(10000);
     }
 }

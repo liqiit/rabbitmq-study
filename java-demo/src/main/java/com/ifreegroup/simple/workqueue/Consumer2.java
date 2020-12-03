@@ -36,7 +36,7 @@ public class Consumer2 {
             Channel channel = connection.createChannel();
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
             System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-            channel.basicQos(1);
+            //channel.basicQos(1);
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
                 System.out.println(" [x] Received '" + message + "'");
@@ -49,7 +49,7 @@ public class Consumer2 {
                     channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
                 }
             };
-            channel.basicConsume(QUEUE_NAME, false, deliverCallback, consumerTag -> {
+            channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> {
             });
         } catch (Exception e) {
             e.printStackTrace();
