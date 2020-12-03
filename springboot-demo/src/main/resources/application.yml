@@ -1,8 +1,13 @@
 
 spring:
   rabbitmq:
-    host: localhost
-    port: 5672
+#    单点配置
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
+#   集群配置
+    addresses: 8.210.252.134:5672,47.242.168.10:5672,47.242.63.83:5672
     username: guest
     password: guest
   application:

@@ -5,7 +5,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
 /**
  * Title: Receiver1
- * Description:
+ * Description: 点对点消息接收者
  * Company: iFree Group
  *
  * @author liqi

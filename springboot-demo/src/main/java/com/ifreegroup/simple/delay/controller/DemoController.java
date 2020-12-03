@@ -1,4 +1,4 @@
-package com.ifreegroup.controller;
+package com.ifreegroup.simple.delay.controller;
 
 import com.ifreegroup.simple.delay.plugin.DelayedSender;
 import com.ifreegroup.simple.delay.ttl.Sender;
