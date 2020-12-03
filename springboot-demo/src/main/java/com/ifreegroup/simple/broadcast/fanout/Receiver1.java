@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
                         value = "fanoutExchange",
                         type = ExchangeTypes.FANOUT //默认为direct类型
                 ),
-                key = {"fanout2"} //routekey 可以绑定多个
+                key = {"fanout1"} //routekey 可以绑定多个
         )
 )
 public class Receiver1 {

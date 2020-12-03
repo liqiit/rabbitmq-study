@@ -21,7 +21,7 @@ public class Sender {
     private FanoutExchange fanoutExchange;
 
     public void publish(String bindKey) {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             rabbitTemplate.convertAndSend(fanoutExchange.getName(), bindKey, "fanout message " + i);
         }
     }
