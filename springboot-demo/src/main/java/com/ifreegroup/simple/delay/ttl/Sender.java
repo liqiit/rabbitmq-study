@@ -34,9 +34,14 @@ public class Sender {
             //rabbitTemplate.convertAndSend(ttlExchange.getName(), "ttl", dlxMsg);
             //指定每个消息延时时间
             rabbitTemplate.convertAndSend(ttlExchange.getName(), "ttl", dlxMsg,message -> {
-                message.getMessageProperties().setExpiration("3000");
+                message.getMessageProperties().setExpiration("10000");
                 return message;
             });
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

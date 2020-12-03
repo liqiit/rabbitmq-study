@@ -35,9 +35,9 @@ import java.util.Date;
 public class Receiver {
     @RabbitHandler
     public void receive(String message) {
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         Date now = new Date();
-        System.out.println("  [x] Received delay message :'" + message + "'");
-        System.out.println("  [x] CurrentTime :" + sf.format(now));
+        System.out.println("  [x]"+message+" CurrentTime :" + sdf.format(now));
+
     }
 }
