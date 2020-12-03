@@ -18,7 +18,7 @@
   - `#`：可匹配一个或多个关键字
   - `*`：只能匹配一个关键字
 - fanout：这种模式只需要将队列绑定到交换机上即可，是不需要设置路由键的。
-- headers：根据发送消息内容中的 headers 属性来匹配
+- headers：根据发送消息内容中的 headers 属性来匹配（极少使用）
 
 ## 添加maven依赖
 
@@ -30,29 +30,49 @@
 </dependency>
 ```
 
+## 测试说明
+
+Java方式测试均采用主方法进行
+
+springboot集成方式除延时队列采用对外服务方式，其他所有示例均采用单元测试进行
+
 ## 默认交换机
 
 RabbitMQ中如果发布消息时没有指定交换机则使用默认交换机（格式为空字符串）
 
+
+
 ### 点对点模式
 
-生产者-消费者模式，示例目录：com.ifreegroup.simple.peer2peer
+生产者-消费者模式，
+
+java示例目录：java-demo模块com.ifreegroup.simple.peer2peer
+
+springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.peer2peer
 
 ### 工作队列模式
 
 多个消费者共享消息模式，通过轮询的模式向每个消费者分发消息
 
-示例目录：com.ifreegroup.simple.workqueue
+java示例目录：Java-demo模块com.ifreegroup.simple.workqueue
+
+springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.workqueue
 
 ## 交换机类型之 direct
 
  direct 通过 RoutingKey 匹配消息路由到指定的队列，因此也可以无需指定交换机，在不指定交换机的情况下会使用 `AMQP default` 默认的交换机，另外在消息投递时要注意 RoutingKey 要完全匹配才能被队列所接收，否则消息会被丢弃的。 
 
-示例目录：com.ifreegroup.simple.broadcast.direct
+java示例目录：java-demo模块com.ifreegroup.simple.broadcast.direct
+
+springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.broadcast.direct
 
 ### 延时队列的实现
 
-- 通过rabbitmq特性ttl和死信队列组合实现，示例目录：com.ifreegroup.simple.delay.ttl
+- 通过rabbitmq特性ttl和死信队列组合实现，
+
+  Java示例目录：java-demo模块com.ifreegroup.simple.delay.ttl
+
+  springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.delay.ttl
 
 - 通过扩展plugin之rabbitmq_delayed_message_exchange实现，
 
@@ -62,7 +82,9 @@ RabbitMQ中如果发布消息时没有指定交换机则使用默认交换机（
 
   启用插件命令：./rabbitmq-plugins  enable rabbitmq_delayed_message_exchange
 
-  示例目录：com.ifreegroup.simple.delay.plugin
+  Java示例目录：java-demo模块com.ifreegroup.simple.delay.plugin
+  
+  springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.delay.plugin
 
 ## 交换机类型之 topic
 
