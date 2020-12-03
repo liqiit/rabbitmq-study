@@ -40,8 +40,6 @@ springboot集成方式除延时队列采用对外服务方式，其他所有示�
 
 RabbitMQ中如果发布消息时没有指定交换机则使用默认交换机（格式为空字符串）
 
-
-
 ### 点对点模式
 
 生产者-消费者模式，
@@ -93,13 +91,17 @@ springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.broadc
 - `#`：可匹配一个或多个关键字
 - `*`：只能匹配一个关键字
 
-示例目录：com.ifreegroup.simple.broadcast.topic
+Java示例目录：com.ifreegroup.simple.broadcast.topic
+
+springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.broadcast.topic
 
 ## 交换机类型之 fanout
 
 与 direct 和 topic 两种类型不同的是这种模式只需要将队列绑定到交换机上即可，是不需要设置路由键的，便可将消息转发到绑定的队列上，正是由于不需要路由键，所以 fanout 也是四个交换机类型中最快的一个，如果是做广播模式的就很适合。
 
-示例目录：com.ifreegroup.simple.broadcast.fanout
+java示例目录：com.ifreegroup.simple.broadcast.fanout
+
+springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.broadcast.fanout
 
 ## 交换机类型之 headers
 
