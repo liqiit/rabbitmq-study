@@ -34,6 +34,7 @@ public class Consumer {
         try{
             Connection connection = connectionFactory.newConnection();
             Channel channel = connection.createChannel();
+            //最好exclusive设置为true防止别的消费者竞争消息
             channel.queueDeclare(QUEUE_NAME, false, true, false, null);
             System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
