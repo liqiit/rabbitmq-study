@@ -22,7 +22,6 @@ public class DelayedSender {
 
     public void send() {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println("发送时间：" + sf.format(new Date()));
         for (int i = 0; i < 10; i++) {
             Date now = new Date();
             String dlxMsg = "publish at " + sf.format(now);
@@ -30,6 +29,11 @@ public class DelayedSender {
                 message.getMessageProperties().setHeader("x-delay", 3000);
                 return message;
             });
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
     }

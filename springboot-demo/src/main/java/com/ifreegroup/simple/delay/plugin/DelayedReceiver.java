@@ -16,14 +16,12 @@ import java.util.Date;
  * @author liqi
  * @date 2020/12/2
  */
-@Slf4j
 @Component("pluginDelayReceiver")
 @RabbitListener(queues = "pluginDelayQueue")
 public class DelayedReceiver {
     @RabbitHandler
     public void process(String msg) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        log.info("接收时间:" + sdf.format(new Date()));
-        log.info("消息内容：" + msg);
+        System.out.println("  [x]"+msg+" CurrentTime :" + sdf.format(new Date()));
     }
 }
