@@ -19,7 +19,7 @@ public class SubscriberError {
         try {
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
-            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT,true);
             String queueName = channel.queueDeclare().getQueue();
             channel.queueBind(queueName, EXCHANGE_NAME, "error");
 

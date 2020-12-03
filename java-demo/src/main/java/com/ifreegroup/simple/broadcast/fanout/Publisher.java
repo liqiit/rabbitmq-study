@@ -22,11 +22,20 @@ public class Publisher {
         factory.setHost("localhost");
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
-            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
-            String message = "info: Hello World!";
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT,true);
+            String message;
+            for (int i = 0; i < 100; i++) {
+                if (i % 2 == 0) {
+                    message = "ErrorInfo " + i;
+                    channel.basicPublish(EXCHANGE_NAME, "error", null, message.getBytes("UTF-8"));
+                } else {
+                    message = "WarnInfo " + i;
+                    channel.basicPublish(EXCHANGE_NAME, "warn", null, message.getBytes("UTF-8"));
+                }
+                System.out.println(" [x] Sent '" + message + "'");
+            }
 
-            channel.basicPublish(EXCHANGE_NAME, "error", null, message.getBytes("UTF-8"));
-            System.out.println(" [x] Sent '" + message + "'");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
