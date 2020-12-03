@@ -5,8 +5,8 @@ import com.rabbitmq.client.*;
 /**
  * Title: SubscriberError
  * Description: 消费者通过bindkey进行绑定，
- * 只关心routekey与 bindkey 完全匹配的消息，
- * 当前消费者只关心bindkey为error的消息
+ * routekey与 bindkey 进行完全匹配，
+ * 当前消费者只消费bindkey为error的消息
  * Company: iFree Group
  *
  * @author liqi
@@ -20,7 +20,7 @@ public class SubscriberError {
     private static final int RABBITMQ_PORT = 5672;
     private static final String EXCHANGE_NAME = "directExchange";
 
-    public static void main(String[] argv) throws Exception {
+    public static void main(String[] argv) {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setHost(RABBITMQ_HOSTNAME);
         connectionFactory.setUsername(RABBITMQ_USERNAME);
@@ -31,7 +31,7 @@ public class SubscriberError {
         try {
             Connection connection = connectionFactory.newConnection();
             Channel channel = connection.createChannel();
-            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT,true);
             String queueName = channel.queueDeclare().getQueue();
             //只会消费bindkey为error的消息
             channel.queueBind(queueName, EXCHANGE_NAME, "error");

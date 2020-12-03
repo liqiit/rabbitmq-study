@@ -30,16 +30,26 @@ public class Publisher {
         connectionFactory.setVirtualHost(RABBITMQ_VIRTUALHOST);
         connectionFactory.setPort(RABBITMQ_PORT);
         try (
-            Connection connection = connectionFactory.newConnection();
-            Channel channel = connection.createChannel()) {
-            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
-            String message = "error info";
-            //发送消息设置bindkey
-            channel.basicPublish(EXCHANGE_NAME, "error", null, message.getBytes("UTF-8"));
-            System.out.println(" [x] Send message '" + message + "'");
+                Connection connection = connectionFactory.newConnection();
+                Channel channel = connection.createChannel()) {
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT,true);
+            for (int i = 0; i < 100; i++) {
+                String message="";
+                if (i % 2 == 0) {
+                    message = "ErrorInfo " + i;
+                    //发送消息设置bindkey
+                    channel.basicPublish(EXCHANGE_NAME, "error", null, message.getBytes("UTF-8"));
+                } else {
+                    message = "WarnInfo " + i;
+                    //发送消息设置bindkey
+                    channel.basicPublish(EXCHANGE_NAME, "warn", null, message.getBytes("UTF-8"));
+                }
+                System.out.println(" [x] Send message '" + message + "'");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
 
         }
     }
