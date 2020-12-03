@@ -23,10 +23,18 @@
 ## 添加maven依赖
 
 ```xml
- <dependency>
+<!--java模式--> 
+<dependency>
      <groupId>com.rabbitmq</groupId>
      <artifactId>amqp-client</artifactId>
      <version>5.9.0</version>
+</dependency>
+
+<!--springboot集成-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+    <version>2.3.4.RELEASE</version>
 </dependency>
 ```
 
