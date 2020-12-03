@@ -31,7 +31,7 @@ public class SubscriberColor {
         try {
             Connection connection = connectionFactory.newConnection();
             Channel channel = connection.createChannel();
-            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC,true);
             String queueName = channel.queueDeclare().getQueue();
             //设置route key为通配符
             channel.queueBind(queueName, EXCHANGE_NAME, "*.color.*");

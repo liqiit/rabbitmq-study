@@ -31,16 +31,20 @@ public class Publisher {
         connectionFactory.setVirtualHost(RABBITMQ_VIRTUALHOST);
         connectionFactory.setPort(RABBITMQ_PORT);
         try (Connection connection = connectionFactory.newConnection();
-                Channel channel = connection.createChannel()) {
+             Channel channel = connection.createChannel()) {
             //指定exchange类型为topic
-            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC, true);
+            //只能匹配到color
             String message = "orange color";
             channel.basicPublish(EXCHANGE_NAME, "rabbit.color.orange", null, message.getBytes("UTF-8"));
             System.out.println(" [x] Send message'" + message + "'");
-
-            message="fast speed";
+            //只能匹配到speed
+            message = "fast speed";
             channel.basicPublish(EXCHANGE_NAME, "color.orange.speed", null, message.getBytes("UTF-8"));
-
+            System.out.println(" [x] Send message '" + message + "'");
+            //既能匹配到color又能匹配到speed
+            message="color speed";
+            channel.basicPublish(EXCHANGE_NAME, "orange.color.speed", null, message.getBytes("UTF-8"));
             System.out.println(" [x] Send message '" + message + "'");
         } catch (Exception e) {
             e.printStackTrace();
