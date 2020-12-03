@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
                         value = "directExchange",
                         type = ExchangeTypes.DIRECT //默认为direct类型
                 ),
-                key = {"direct2"} //routekey 可以绑定多个
+                key = {"direct2","direct"} //routekey 可以绑定多个
         )
 )
 public class Receiver3 {

@@ -21,7 +21,7 @@ public class Sender {
     private DirectExchange directExchange;
 
     public void publish(String routeKey) {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             rabbitTemplate.convertAndSend(directExchange.getName(), routeKey, "direct message " + i);
         }
     }
