@@ -149,4 +149,7 @@ springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.broadc
 - Channel避免多线程共享
 
 - Subscriber确认
+
 - Publisher 确认
+
+- 追踪消息轨迹
