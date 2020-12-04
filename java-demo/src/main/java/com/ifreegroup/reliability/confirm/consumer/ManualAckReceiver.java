@@ -49,6 +49,7 @@ public class ManualAckReceiver {
             };
             channel.basicConsume(QUEUE_NAME, false, deliverCallback, consumerTag -> {
             });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
