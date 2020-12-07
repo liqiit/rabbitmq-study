@@ -6,14 +6,14 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Title: AddressConnection
+ * Title: AutoSwitchAddressConnection
  * Description: 自动切换服务节点与自动恢复互斥
  * Company: iFree Group
  *
  * @author liqi
  * @date 2020/12/7
  */
-public class AddressConnection {
+public class AutoSwitchAddressConnection {
     private static final String RABBITMQ_USERNAME = "guest";
     private static final String RABBITMQ_PASSWORD = "guest";
     private static final String RABBITMQ_VIRTUALHOST = "/";
