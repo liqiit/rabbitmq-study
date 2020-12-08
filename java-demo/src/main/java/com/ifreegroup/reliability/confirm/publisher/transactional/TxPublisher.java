@@ -36,6 +36,7 @@ public class TxPublisher {
         factory.setPort(RABBITMQ_PORT);
         try (Connection connection = factory.newConnection();
              Channel channel = connection.openChannel().get()) {
+            //打开事务
             AMQP.Tx.SelectOk selectOk = channel.txSelect();
             System.out.println("selectOK:" + selectOk);
             channel.exchangeDeclare("txMsgExchange", BuiltinExchangeType.DIRECT, true);
@@ -62,9 +63,10 @@ public class TxPublisher {
 //                AMQP.BasicProperties props = new AMQP.BasicProperties();
 //                props.builder().messageId(UUID.randomUUID().toString()).build();
                 channel.basicPublish("txMsgExchange", "tx", props, message.getBytes("UTF-8"));
+                channel.txCommit();
             }
 
-            channel.txCommit();
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
