@@ -23,7 +23,7 @@ public class TxPublisher {
     private static final String RABBITMQ_USERNAME = "guest";
     private static final String RABBITMQ_PASSWORD = "guest";
     private static final String RABBITMQ_VIRTUALHOST = "/";
-    private static final String RABBITMQ_HOSTNAME = "localhost";
+    private static final String RABBITMQ_HOSTNAME = "47.242.63.83";
     private static final int RABBITMQ_PORT = 5672;
 
     public static void main(String[] args) {
@@ -63,7 +63,9 @@ public class TxPublisher {
 //                AMQP.BasicProperties props = new AMQP.BasicProperties();
 //                props.builder().messageId(UUID.randomUUID().toString()).build();
                 channel.basicPublish("txMsgExchange", "tx", props, message.getBytes("UTF-8"));
-                channel.txCommit();
+                System.out.println("send commitOk ,currentTime:"+System.currentTimeMillis());
+                AMQP.Tx.CommitOk commitOk = channel.txCommit();
+                System.out.println("receive commitOk ,currentTime:"+System.currentTimeMillis());
             }
 
 
