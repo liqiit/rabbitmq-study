@@ -8,11 +8,15 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.util.StringUtils;
 
 /**
  * Title: AutoRecoverConfiguration
  * Description:
+ * RabbitAdmin 在连接失败的情况下会自动重新创建queues, exchanges, bindings等信息
+ * 通过retryTemplate设置重试策略
  * Company: iFree Group
  *
  * @author liqi
@@ -26,7 +30,9 @@ public class AutoRecoverConfiguration {
 
     @Bean("cachConnectionFactory")
     public ConnectionFactory cachConnectionFactory() {
+
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+
         connectionFactory.setCacheMode(CachingConnectionFactory.CacheMode.CONNECTION);
         connectionFactory.setAddresses("");
         //设置为true，address列表将随机获取一个address创建连接
@@ -69,13 +75,30 @@ public class AutoRecoverConfiguration {
 
     @Bean
     public AmqpAdmin amqpAdmin() {
-        return new RabbitAdmin(cachConnectionFactory());
+        RabbitAdmin rabbitAdmin= new RabbitAdmin(cachConnectionFactory());
+        RetryTemplate retryTemplate = new RetryTemplate();
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        backOffPolicy.setInitialInterval(500);
+        backOffPolicy.setMultiplier(10.0);
+        backOffPolicy.setMaxInterval(10000);
+        retryTemplate.setBackOffPolicy(backOffPolicy);
+        rabbitAdmin.setRetryTemplate(retryTemplate);
+        return rabbitAdmin;
     }
 
     @Bean
     public RabbitTemplate rabbitTemplate() {
-        return new RabbitTemplate(cachConnectionFactory());
+        RabbitTemplate template = new RabbitTemplate(cachConnectionFactory());
+        RetryTemplate retryTemplate = new RetryTemplate();
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        backOffPolicy.setInitialInterval(500);
+        backOffPolicy.setMultiplier(10.0);
+        backOffPolicy.setMaxInterval(10000);
+        retryTemplate.setBackOffPolicy(backOffPolicy);
+        template.setRetryTemplate(retryTemplate);
+        return template;
     }
+
 
     @Bean
     public Queue myQueue() {
