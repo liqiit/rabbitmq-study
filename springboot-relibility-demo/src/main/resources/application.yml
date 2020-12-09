@@ -1,0 +1,38 @@
+spring:
+  rabbitmq:
+    addresses: 8.210.252.134:5672,47.242.168.10:5672,47.242.63.83:5672
+    username: guest
+    password: guest
+    #======================生产端配置=========================
+    #开启 confirm 确认机制，开启事务此处必须为none
+    publisher-confirm-type: none #correlated
+    #开启 return 确认机制
+    publisher-returns: true
+    template:
+      #设置为 true后，消费者在消息没有被路由到合适队列情况下会被return监听，而不会自动删除
+      mandatory: true
+      #重试策略
+      retry:
+        enabled: true
+        initial-interval: 1000ms
+        max-attempts: 3
+        max-interval: 10000ms
+        multiplier: 1
+    cache:
+      connection:
+        mode: connection
+      channel:
+        size: 10
+    #=====================消费端配置================================
+    listener:
+      simple:
+        #none等价于rabbitmq中的autoack，broker发完直接删除
+        #manual 通过Channel.basicAck()
+        #auto 通过容器确认消息除非发生异常
+        acknowledge-mode: manual
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          max-attempts: 3
+          max-interval: 10000ms
+
