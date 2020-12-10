@@ -1,25 +1,24 @@
-package com.ifreegroup.timely.pullMode;
+package com.ifreegroup.timely.pushMode;
 
-import com.ifreegroup.timely.RabbitMQApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * Title: PullModeTest
+ * Title: PushModeTest
  * Description:
  * Company: iFree Group
  *
  * @author liqi
  * @date 2020/12/10
  */
-@SpringBootTest(classes = {RabbitMQApplication.class})
-public class PullModeTest {
+@SpringBootTest
+public class PushModeTest {
     @Autowired
     private Publisher publisher;
 
     @Test
-    public void testPull() {
-        publisher.pullPublish();
+    public void testPush() {
+        publisher.pushPublish();
     }
 }
