@@ -11,6 +11,8 @@
     <modules>
         <module>java-demo</module>
         <module>springboot-demo</module>
+        <module>springboot-relibility-demo</module>
+        <module>springboot-timely-demo</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -36,6 +38,11 @@
                 <artifactId>lombok</artifactId>
                 <version>1.18.12</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-core</artifactId>
+                <version>3.2.6</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -119,37 +119,158 @@ springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.broadc
 
 ## 消息可靠性
 
-- Connection自动恢复
+- 监控服务资源使用情况API
 
-  示例目录：com.ifreegroup.reliability.connection
+  http://127.0.0.1:15672/api/index.html
 
-  触发条件：
+- Connection
 
-  - 连接过程中的IO异常
+  - 自动恢复
 
-  - socket读操作超时
+    示例类：com.ifreegroup.reliability.connection.AutoRecoverConnection
 
-  - 没有收到broker端发的心跳
+     触发条件(**初始化连接失败将不会触发恢复连接机制**)：
 
-  **初始化连接失败将不会触发恢复连接机制**
+    - 连接过程中的IO异常
+    - socket读操作超时
+    - 没有收到broker端发的心跳
+  
+    关键配置：
+  
+    ```Java
+    ConnectionFactory factory = new ConnectionFactory();
+    //启用自动恢复，4.0.0版本之后默认启用
+    factory.setAutomaticRecoveryEnabled(true);
+    //设置尝试自动恢复间隔
+    factory.setNetworkRecoveryInterval(10000);
+    factory.newConnection();
+    ```
 
-  启用配置：
+  ------
 
-  ```java
-  ConnectionFactory factory = new ConnectionFactory();
-  //启用自动恢复，4.0.0版本之后默认启用
-  factory.setAutomaticRecoveryEnabled(true);
-  //设置尝试自动恢复间隔
-  factory.setNetworkRecoveryInterval(10000);
-  //指定服务列表
-  Address[] addresses = {new Address("192.168.1.4"), new Address("192.168.1.5")};
-  factory.newConnection(addresses);
-  ```
+  - 多服务节点切换
 
+    示例类：com.ifreegroup.reliability.connection.AutoSwitchAddressConnection
+    ```java
+    ConnectionFactory factory = new ConnectionFactory();
+    //启用自动恢复，4.0.0版本之后默认启用
+    factory.setAutomaticRecoveryEnabled(false);
+    //设置尝试自动恢复间隔
+    factory.setNetworkRecoveryInterval(10000);
+    //指定服务列表
+    Address[] addresses = {
+        new Address("8.210.252.134"),
+        new Address("47.242.63.83"), 
+        new Address("47.242.168.10")
+    };
+    factory.newConnection(addresses);
+    ```
+
+    ```java
+    <!--初始化连接134-->
+    Attempting to connect to: [8.210.252.134:5672, 47.242.168.10:5672, 47.242.63.83:5672]
+    Created new connection: rabbitConnectionFactory#6e041285:0/SimpleConnection@2da99821 [delegate=amqp://guest@8.210.252.134:5672/, localPort= 62234]
+    
+                                                                                      <!--134节点停掉，服务抛出连接异常，关闭所有channel-->                                                 
+    An unexpected connection driver error occured (Exception message: Connection reset)
+    Channel shutdown: connection error                                                                      
+                                                                                      
+    <!--重新连接10服务-->                                                                                      
+    Restarting Consumer@2c829dbc: tags=[[amq.ctag-ha5YrxgRIIC2NgH371Pnhg]], channel=Cached Rabbit Channel: PublisherCallbackChannelImpl: AMQChannel(amqp://guest@8.210.252.134:5672/,5), conn: Proxy@7b1e5e55 Shared Rabbit Connection: SimpleConnection@2da99821 [delegate=amqp://guest@8.210.252.134:5672/, localPort= 62234], acknowledgeMode=AUTO local queue size=0
+    Attempting to connect to: [8.210.252.134:5672, 47.242.168.10:5672, 47.242.63.83:5672]
+    
+    Created new connection: rabbitConnectionFactory#6e041285:1/SimpleConnection@1c2afbd1 [delegate=amqp://guest@47.242.168.10:5672/, localPort= 62420]
+    ```
+    
+  
 - Channel避免多线程共享
 
-- Subscriber确认
+- Subscriber与Broker可靠性
 
-- Publisher 确认
+  示例类：com.ifreegroup.reliability.confirm.Subscriber
+
+- Publisher 与Broker可靠性
+
+  - Ack
+
+    交互过程：
+
+    ```
+    Publisher             Broker
+    Connection.Start<---> Connection.Start-Ok
+    Connection.Tune <---> Connection.Tune-Ok
+    Connection.Open <---> Connection.Open-Ok
+    Channel.Open    <---> Channel.Open-Ok
+    Confirm.Select  <---> Confirm.Select-Ok
+    Exchange.Declare<---> Exchange.Declare-Ok
+    Basic.Publish    --->
+    				<---  Basic.ACK
+    ```
+
+    示例类：com.ifreegroup.reliability.confirm.Publisher
+
+  - 事务消息
+
+    ```
+    Publisher             Broker
+    Connection.Start<---> Connection.Start-Ok
+    Connection.Tune <---> Connection.Tune-Ok
+    Connection.Open <---> Connection.Open-Ok
+    Channel.Open    <---> Channel.Open-Ok
+    Tx.Select       <---> Tx.Select-Ok
+    Exchange.Declare<---> Exchange.Declare-Ok
+    Basic.Publish    --->
+    Tx.Commit       <---> Tx.Commit-Ok
+    ```
+
+  ​       示例目录：com.ifreegroup.reliability.confirm.publisher.transactional
 
 - 追踪消息轨迹
+
+  通过配置text类型（JSON格式更适合程序读取，内容会进行Base64编码）的消息跟踪日志，发布消息时手动增加自定义属性
+
+  ```
+  2020-12-08 3:18:24:446: Message published
+  
+  Node:         rabbit@CY-20171221PLMF
+  Connection:   127.0.0.1:55811 -> 127.0.0.1:5672
+  Virtual host: /
+  User:         guest
+  Channel:      1
+  Exchange:     txMsgExchange
+  Routing keys: [<<"tx">>]
+  Routed queues: [<<"txMsgQueue">>]
+  Properties:   [{<<"cluster_id">>,longstr,<<"clusterId">>},
+                 {<<"app_id">>,longstr,<<"appId">>},
+                 {<<"user_id">>,longstr,<<"guest">>},
+                 {<<"type">>,longstr,<<"type">>},
+                 {<<"timestamp">>,signedint,1607397504},
+                 {<<"message_id">>,longstr,
+                  <<"4d53940a-09e0-4492-acef-e8d846c1a92e">>},
+                 {<<"expiration">>,longstr,<<"100">>},
+                 {<<"reply_to">>,longstr,<<"replyTo">>},
+                 {<<"correlation_id">>,longstr,<<"correlationId">>},
+                 {<<"priority">>,signedint,1},
+                 {<<"delivery_mode">>,signedint,1},
+                 {<<"headers">>,table,[]},
+                 {<<"content_encoding">>,longstr,<<"utf-8">>},
+                 {<<"content_type">>,longstr,<<"text">>}]
+  Payload: 
+  hello txMessage 0
+  ```
+
+- mq节点集群
+
+  - 普通集群
+- 节点之间只同步元数据，消息数据仍保存在发布目标节点，如果目标节点宕机，会导致队列的不可用
+  - 镜像集群
+
+    - 节点类型必须为disc，否则无法启用
+
+- 异常情况的监控
+  - 对于publish消息指定不存在的exchange导致channel关闭情况的监控
+  - 对于publish消息指定的exchange没有绑定queue情况的监控
+
+## 消息及时性
+
+push模式 Vs  pull模式

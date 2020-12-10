@@ -34,7 +34,7 @@ public class Publisher {
 
 
     /***
-     * 同步等待结果
+     * 事务消息投递
      */
     @Transactional(transactionManager = "rabbitTransactionManager", rollbackFor = Exception.class)
     public void publishForTransaction() {

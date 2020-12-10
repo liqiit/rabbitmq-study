@@ -6,10 +6,11 @@ spring:
 #    port: 5672
 #    username: guest
 #    password: guest
-#   集群配置
+#   集群配置,某个节点出现问题会自动切换到可用的节点，
     addresses: 8.210.252.134:5672,47.242.168.10:5672,47.242.63.83:5672
     username: guest
     password: guest
+
   application:
     name: springboot-demo
 server:
