@@ -1,4 +1,4 @@
-package com.ifreegroup.reliability.confirm.consumer;
+package com.ifreegroup.bigdata.mutilpleLevelExchange;
 
 import com.rabbitmq.client.*;
 
@@ -7,11 +7,11 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Title: Publisher
- * Description:消息发布者
+ * Description:
  * Company: iFree Group
  *
  * @author liqi
- * @date 2020/12/3
+ * @date 2020/12/10
  */
 public class Publisher {
     private static final String RABBITMQ_USERNAME = "guest";
@@ -30,17 +30,8 @@ public class Publisher {
         factory.setPort(RABBITMQ_PORT);
         try (Connection connection = factory.newConnection();
              Channel channel = connection.openChannel().get()) {
-            channel.exchangeDeclare("ackDemoExchange", BuiltinExchangeType.DIRECT, true);
-            for (int i = 0; i < 100; i++) {
-                if (i % 2 == 0) {
-                    String message = "hello autoAck " + i;
-                    //重启broker之后消息能不能持久化关键配置,MessageProperties.PERSISTENT_TEXT_PLAIN
-                    channel.basicPublish("ackDemoExchange", "autoAck",  MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes("UTF-8"));
-                } else {
-                    String message = "hello manualAck " + i;
-                    channel.basicPublish("ackDemoExchange", "manualAck", MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes("UTF-8"));
-                }
-            }
+             channel.exchangeDeclare("ackDemoExchange", BuiltinExchangeType.DIRECT, true);
+
 
         } catch (IOException e) {
             e.printStackTrace();

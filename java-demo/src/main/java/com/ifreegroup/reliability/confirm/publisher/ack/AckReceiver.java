@@ -14,7 +14,7 @@ public class AckReceiver {
     private static final String RABBITMQ_USERNAME = "guest";
     private static final String RABBITMQ_PASSWORD = "guest";
     private static final String RABBITMQ_VIRTUALHOST = "/";
-    private static final String RABBITMQ_HOSTNAME = "127.0.0.1";
+    private static final String RABBITMQ_HOSTNAME = "47.242.63.83";
     private static final int RABBITMQ_PORT = 5672;
     private final static String QUEUE_NAME = "publishAckMsgQueue";
 

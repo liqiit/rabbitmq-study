@@ -49,7 +49,18 @@ public class ManualAckReceiver {
             };
             channel.basicConsume(QUEUE_NAME, false, deliverCallback, consumerTag -> {
             });
+            //增加连接恢复监听器
+            ((Recoverable)connection).addRecoveryListener(new RecoveryListener() {
+                @Override
+                public void handleRecovery(Recoverable recoverable) {
+                    System.out.println("连接自动恢复已完成");
+                }
 
+                @Override
+                public void handleRecoveryStarted(Recoverable recoverable) {
+                    System.out.println("连接自动恢复开始启动");
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

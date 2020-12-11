@@ -185,6 +185,17 @@ springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.broadc
   
 - Channel避免多线程共享
 
+- 持久化发布消息
+
+  发布持久化消息，在broker宕机时将消息保存至磁盘，broker启动后将消息加载到内存继续发送，指定deliveryMode为2
+
+  **关键配置：MessageProperties.PERSISTENT_TEXT_PLAIN**
+
+  ```Java
+  channel.basicPublish("ackDemoExchange","autoAck",  MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes("UTF-8"));
+  
+  ```
+
 - Subscriber与Broker可靠性
 
   示例类：com.ifreegroup.reliability.confirm.Subscriber
@@ -262,6 +273,7 @@ springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.broadc
 - mq节点集群
 
   - 普通集群
+  
 - 节点之间只同步元数据，消息数据仍保存在发布目标节点，如果目标节点宕机，会导致队列的不可用
   - 镜像集群
 
@@ -273,4 +285,17 @@ springboot集成示例目录：springboot-demo模块com.ifreegroup.simple.broadc
 
 ## 消息及时性
 
-push模式 Vs  pull模式
+"推"模式 VS  "拉"模式
+
+- push模式
+
+  及时性更好，broker收到消息后立即推送给消费端
+
+  示例目录：springboot-timely-demo#com.ifreegroup.timely.pushMode
+
+- pull模式
+
+  更灵活，获取消息的规则由消费端来控制，可以根据具体的场景定制消费消息的时机和规则
+
+  示例目录：springboot-timely-demo#com.ifreegroup.timely.pullMode
+

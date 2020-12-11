@@ -47,6 +47,8 @@ public class AutoRecoverConnection {
             conn.setId("autoRecoverConnection");
             channel=conn.openChannel().get();
             System.out.println(channel.getConnection());
+            channel.exchangeDeclare("autoConnExchange",BuiltinExchangeType.DIRECT,true);
+
         } catch (java.net.ConnectException e) {
             try {
                 Thread.sleep(5000);

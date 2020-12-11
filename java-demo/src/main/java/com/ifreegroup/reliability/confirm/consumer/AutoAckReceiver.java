@@ -36,7 +36,7 @@ public class AutoAckReceiver {
             channel.basicQos(1);
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
-                System.out.println(" [x] Received '" + message + "'");
+                System.err.println(" [x] Received '" + message + "'");
                 try {
                     doWork();
                 } catch (Exception e) {
@@ -48,9 +48,22 @@ public class AutoAckReceiver {
             };
             channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> {
             });
+            //增加连接恢复监听器
+            ((Recoverable)connection).addRecoveryListener(new RecoveryListener() {
+                @Override
+                public void handleRecovery(Recoverable recoverable) {
+                    System.out.println("连接自动恢复已完成");
+                }
+
+                @Override
+                public void handleRecoveryStarted(Recoverable recoverable) {
+                    System.out.println("连接自动恢复开始启动");
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private static void doWork() throws InterruptedException {
